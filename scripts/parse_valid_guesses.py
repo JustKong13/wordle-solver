@@ -1,6 +1,6 @@
 import pandas as pd
 
-file = 'words.txt'
+file = '../wordlists/words.txt'
 validAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 
 with open(file) as f:

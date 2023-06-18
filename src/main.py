@@ -1,1 +1,9 @@
-# The engine game of wordle
+from Game import Wordle
+
+
+def main():
+    pass
+
+
+if __name__ == '__main__':
+    main()
