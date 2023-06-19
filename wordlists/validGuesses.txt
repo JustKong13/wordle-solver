@@ -1,4 +1,3 @@
-,words
 0,aaron
 1,aback
 2,abaft
