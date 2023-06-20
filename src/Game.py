@@ -4,12 +4,13 @@ import random
 
 class Wordle:
     def __init__(self):
-        self.board = [[] * 5] * 6
+        self.board = []
         self.guesses = []
         self.answer = self.generateAnswer()
         self.validGuesses = self.generateValidGuesses()
+        self.gameState = 'PLAYING'
 
-    def generateAnswer(self):
+    def generateAnswer(self) -> str:
         """
         Returns a word to be the answer to the game
         """
@@ -21,7 +22,7 @@ class Wordle:
 
         return lines[randomIndex].upper()
 
-    def generateValidGuesses(self):
+    def generateValidGuesses(self) -> list[str]:
         """
         Returns a list of all guessable words
         """
@@ -37,9 +38,16 @@ class Wordle:
 
         return validGuesses
 
-    def evaluateGuess(self, word, guess):
+    def evaluateGuess(self, word, guess) -> list[str]:
+        """
+        Returns the row of colors to be displayed on the board
+        """
         if not (guess.upper() in self.validGuesses):
             return "INVALID"
+
+        if word == guess:
+            self.gameState = 'Won'
+            return ['G', 'G', 'G', 'G', 'G']
 
         row = ['', '', '', '', '']
         print(row)
@@ -55,3 +63,8 @@ class Wordle:
             else:
                 row[i] = "B"
         return row
+
+    def main(self):
+        turnNumber = len(self.board)
+        while self.__class__gameState == 'PLAYING':
+            guess = input("Guess a word")
