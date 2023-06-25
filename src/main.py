@@ -2,7 +2,8 @@ from Game import Wordle
 
 
 def main():
-    pass
+    wordle = Wordle()
+    wordle.main()
 
 
 if __name__ == '__main__':
