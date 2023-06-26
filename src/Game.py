@@ -71,7 +71,7 @@ class Wordle:
 
     def guessWord(self, guess):
         """
-        Returns the evaluation of a certain word choice
+        Returns the evaluation of the game
         """
         self.generateWordList()
         print("The answer is: " + self.answer)
@@ -88,7 +88,6 @@ class Wordle:
         Run this to run the game engine
         """
         self.generateWordList()
-        print("The answer is: " + self.answer)
 
         while self.gameState == 'PLAYING':
             guess = input("Guess a word: ")
@@ -102,4 +101,4 @@ class Wordle:
             self.printBoard()
 
         print('Congradulations! You won in ' +
-              int(self.guessCount) + ' guesses.')
+              str(self.guessCount) + ' guesses.')
