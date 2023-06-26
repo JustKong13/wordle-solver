@@ -63,8 +63,25 @@ class Wordle:
         self.board.append(result)
 
     def printBoard(self):
+        """
+        Pretty print functions
+        """
         for row in self.board:
             print(row)
+
+    def guessWord(self, guess):
+        """
+        Returns the evaluation of a certain word choice
+        """
+        self.generateWordList()
+        print("The answer is: " + self.answer)
+        evaluation = self.evaluateGuess(self.answer, guess.lower())
+        if evaluation == 'INVALID':
+            return
+        else:
+            self.guessCount += 1
+
+        return evaluation
 
     def main(self):
         """
@@ -84,4 +101,5 @@ class Wordle:
 
             self.printBoard()
 
-        print('Congradulations! You won.')
+        print('Congradulations! You won in ' +
+              int(self.guessCount) + ' guesses.')
