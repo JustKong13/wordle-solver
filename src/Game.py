@@ -14,8 +14,9 @@ class Wordle:
         """
         Generates the list of all guessable words
         """
-        validGuesses = './WordleWords.txt'
-        with open(validGuesses) as f:
+        validGuessesFile = './wordlists/WordleWords.txt'
+        guessableWordsFile = './wordlists/GuessableWords.txt'
+        with open(validGuessesFile) as f:
             words = f.readlines()
         f.close()
 
@@ -23,7 +24,15 @@ class Wordle:
         for word in words:
             upperWords.append(word[:-1])
 
-        self.validGuesses = upperWords
+        with open(guessableWordsFile) as f_guess:
+            guessable = f_guess.readlines()
+        f_guess.close()
+
+        guessableWords = []
+        for word in guessable:
+            guessableWords.append(word[:-1])
+
+        self.validGuesses = guessableWords
         self.answer = random.choice(upperWords)
 
     def evaluateGuess(self, word, guess):
@@ -40,19 +49,21 @@ class Wordle:
         row = ""
         guessed_index_of_letter = set()
         for i in range(len(guess)):
+            print(guessed_index_of_letter)
             if word[i] == guess[i]:
                 row += 'G'
                 guessed_index_of_letter.add(i)
 
-            elif (guess[i] in word) and (word[i] != guess[i]) and (i not in guessed_index_of_letter):
+            elif (guess[i] in word) and (word[i] != guess[i]) and (word.find(guess[i]) not in guessed_index_of_letter):
+                guessed_index_of_letter.add(word.find(guess[i]))
                 row += 'Y'
 
             else:
                 row += 'B'
-        self.convertRowToVisual(row)
+        self.convertRowToVisual(row, guess)
         return row
 
-    def convertRowToVisual(self, row):
+    def convertRowToVisual(self, row, guess):
         if row == 'INVALID':
             print('This word is invalid. Try again')
         d = {'B': '⬛️', 'Y': '🟨', 'G': '🟩'}
@@ -60,6 +71,7 @@ class Wordle:
         result = ''
         for letter in row:
             result += d[letter]
+        result += ' ' + guess
         self.board.append(result)
 
     def printBoard(self):
@@ -88,6 +100,7 @@ class Wordle:
         Run this to run the game engine
         """
         self.generateWordList()
+        print(self.answer)
 
         while self.gameState == 'PLAYING':
             guess = input("Guess a word: ")
