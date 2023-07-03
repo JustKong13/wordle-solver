@@ -1,14 +1,34 @@
 from Game import Wordle
+from itertools import product
 
 
-Wordle = Wordle()
-guess_bank = Wordle.validGuesses
+def main():
+    Wordle = Wordle()
+    guess_bank = Wordle.validGuesses
+
+    with open('./wordlists/WordleWords.txt') as f:
+        all_words = f.readlines()
+    f.close()
+
+    possible_answers = []
+    for word in all_words:
+        possible_answers.append(word[:-1])
 
 
-with open('./wordlists/WordleWords.txt') as f:
-    all_words = f.readlines()
-f.close()
+def generate_possibilities():
+    """
+    Returns list of all possible length five permutations of "B", "G", "Y"
+    """
 
-possible_answers = []
-for word in all_words:
-    possible_answers.append(word[:-1])
+    items = "BYG"
+    permutations_of_results = list(product(items, repeat=5))
+
+    results: list[str] = []
+
+    for row in permutations_of_results:
+        s = ''
+        for char in row:
+            s += char
+        results.append(s)
+
+    return results

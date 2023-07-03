@@ -49,7 +49,6 @@ class Wordle:
         row = ""
         guessed_index_of_letter = set()
         for i in range(len(guess)):
-            print(guessed_index_of_letter)
             if word[i] == guess[i]:
                 row += 'G'
                 guessed_index_of_letter.add(i)
