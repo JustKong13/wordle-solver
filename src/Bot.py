@@ -1,18 +1,22 @@
 from Game import Wordle
 from itertools import product
+import pandas as pd
 
 
-def main():
-    Wordle = Wordle()
-    guess_bank = Wordle.validGuesses
+results = "./wordlists/results.csv"
+df = pd.read_csv(results)
 
-    with open('./wordlists/WordleWords.txt') as f:
-        all_words = f.readlines()
-    f.close()
 
-    possible_answers = []
-    for word in all_words:
-        possible_answers.append(word[:-1])
+Wordle = Wordle()
+guess_bank = Wordle.validGuesses
+
+with open('./wordlists/WordleWords.txt') as f:
+    all_words = f.readlines()
+f.close()
+
+possible_answers = []
+for word in all_words:
+    possible_answers.append(word[:-1])
 
 
 def generate_possibilities():
@@ -32,3 +36,6 @@ def generate_possibilities():
         results.append(s)
 
     return results
+
+
+def update_possible_answers(guess, result):
