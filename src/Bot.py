@@ -39,3 +39,6 @@ def generate_possibilities():
 
 
 def update_possible_answers(guess, result):
+    if result == 'GGGGG':
+        print("The word was " + guess + "!")
+        return [guess]
