@@ -3,11 +3,11 @@ from itertools import product
 import pandas as pd
 
 
-class Solver:
-    def __init__(self):
-        self.wordle = Wordle()
-        self.guess_bank = self.wordle.validGuesses
-        self.result_table = pd.read_csv("./wordlists/results.csv")
+class Solver(Wordle):
+    def __init__(self, result_table):
+        super().__init__()
+        self.guess_bank = self.generateWordList()
+        self.result_table = result_table
         self.possible_answers = []
 
         with open("./wordlists/WordleWords.txt") as f:
@@ -64,17 +64,11 @@ class Solver:
             # does not share any letters with bad_letters
             possible_answer = True
             for i in range(5):
-                if word[i] in bad_letters:
-                    possible_answer = False
-                    break
                 if (
-                    guaranteed_letter_placement[i] != ""
+                    word[i] in bad_letters
+                    and guaranteed_letter_placement[i] != ""
                     and guaranteed_letter_placement[i] != word[i]
-                ):
-                    possible_answer = False
-                    break
-                if (
-                    letter_bank[i] != ""
+                    and letter_bank[i] != ""
                     and letter_bank[i] in word
                     and letter_bank[i] != word[i]
                 ):
