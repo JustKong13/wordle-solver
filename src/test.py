@@ -2,6 +2,7 @@ from Bot import Solver
 import pandas as pd
 
 result_table = pd.read_csv("./wordlists/results.csv")
+starter = "raise"
 
 
 def test_guess_bank_modification():
@@ -16,15 +17,20 @@ def test_guess_bank_modification():
         solver.update_possible_answers(guess, result)
 
         if word in solver.possible_answers:
-            print(i)
-            pass
+            print("Turn " + str(i) + ", word is " + solver.answer)
         else:
             print(solver.answer)
             break
 
 
+def what_is_best_word():
+    solver = Solver(result_table)
+    print(solver.calculate_best_word())
+
+
 def main():
-    test_guess_bank_modification()
+    # test_guess_bank_modification()
+    what_is_best_word()
 
 
 main()

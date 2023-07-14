@@ -1,6 +1,7 @@
 from Game import Wordle
 from itertools import product
 import pandas as pd
+import math
 
 
 class Solver(Wordle):
@@ -18,11 +19,6 @@ class Solver(Wordle):
             self.possible_answers.append(word[:-1])
 
     def generate_permuataions(self):
-        """
-        Returns list of all possible length five permutations of "B", "G", "Y".
-        To be ran once at the beginning of the game
-        """
-
         items = "BYG"
         permutations_of_results = list(product(items, repeat=5))
 
@@ -36,6 +32,32 @@ class Solver(Wordle):
 
         return {permutation: 0 for permutation in results}
 
+    def possible_word(
+        self,
+        green_letters: list[str],
+        yellow_letters: list[str],
+        black_letters: list[str],
+        possible_word: str,
+    ):
+        # positional correctness with guaranteed_letter_placement
+        # positional incorrectness but includes letter in letter_bank
+        # does not share any letters with bad_letters
+        # check black letters
+        for letter in black_letters:
+            if letter in possible_word:
+                return False
+        for i in range(5):
+            # Chcek green letters
+            if green_letters[i] != "" and green_letters[i] != possible_word[i]:
+                return False
+            # check yellow letters
+            if yellow_letters[i] not in possible_word:
+                return False
+            if yellow_letters[i] == possible_word[i]:
+                return False
+
+        return True
+
     def update_possible_answers(self, guess, result):
         """
         Updates possibe_answers to only contain words that safisty the given criteria
@@ -46,36 +68,68 @@ class Solver(Wordle):
 
         # generating word constraints
         guaranteed_letter_placement = [""] * 5
-        letter_bank = [""] * 5
+        letters_yellow = [""] * 5
         bad_letters = []
         for i in range(len(result)):
             if result[i] == "G":
                 guaranteed_letter_placement[i] = guess[i]
             if result[i] == "Y":
-                letter_bank[i] = guess[i]
+                letters_yellow[i] = guess[i]
             if result[i] == "B":
                 bad_letters.append(guess[i])
 
         new_possible_answers = []
         # reducing list of possible answers
         for word in self.possible_answers:
-            # positional correctness with guaranteed_letter_placement
-            # positional incorrectness but includes letter in letter_bank
-            # does not share any letters with bad_letters
-            possible_answer = True
-            for i in range(5):
-                if (
-                    word[i] in bad_letters
-                    and guaranteed_letter_placement[i] != ""
-                    and guaranteed_letter_placement[i] != word[i]
-                    and letter_bank[i] != ""
-                    and letter_bank[i] in word
-                    and letter_bank[i] != word[i]
-                ):
-                    possible_answer = False
-                    break
-
-            if possible_answer:
+            if self.possible_word(
+                guaranteed_letter_placement, letters_yellow, bad_letters, word
+            ):
                 new_possible_answers.append(word)
 
         self.possible_answers = new_possible_answers
+        self.result_table = self.result_table[
+            (self.result_table["possible_answers"].isin(new_possible_answers))
+        ]
+
+    def calculate_best_word(self):
+        """
+        Return dictionary with possible row results and frequency
+        """
+        word = ""
+        entropy = 0
+
+        for possible_answer in self.possible_answers:
+            d = self.generate_permuataions()
+            for index, row in self.result_table[
+                ["possible_answers", possible_answer]
+            ].iterrows():
+                d[row[possible_answer]] += 1
+
+            curr_entropy = self.calculate_entropy(d)
+            if curr_entropy > entropy:
+                word = possible_answer
+                entropy = curr_entropy
+            print(
+                "Testing "
+                + possible_answer
+                + ", which has a score of: "
+                + str(curr_entropy)
+                + ". Current winner: "
+                + word
+                + " with score "
+                + str(entropy)
+            )
+
+        return word
+
+    def calculate_entropy(self, pmf: dict):
+        possible_answer_count = len(self.possible_answers)
+        result = 0
+        for key in pmf:
+            if pmf[key] != 0:
+                result += (
+                    pmf[key]
+                    / possible_answer_count
+                    * math.log((possible_answer_count / pmf[key]), 2)
+                )
+        return result
