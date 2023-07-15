@@ -5,9 +5,8 @@ import math
 
 
 class Solver(Wordle):
-    def __init__(self, result_table):
+    def __init__(self, result_table, start_word):
         super().__init__()
-        self.guess_bank = self.generateWordList()
         self.result_table = result_table
         self.possible_answers = []
 
@@ -17,6 +16,9 @@ class Solver(Wordle):
 
         for word in all_words:
             self.possible_answers.append(word[:-1])
+
+        self.start_word = start_word  # raise is the best word supposedly
+        self.generateWordList()
 
     def generate_permuataions(self):
         items = "BYG"
@@ -39,6 +41,9 @@ class Solver(Wordle):
         black_letters: list[str],
         possible_word: str,
     ):
+        """
+        Returns boolean of whether a word is a possible answer
+        """
         # positional correctness with guaranteed_letter_placement
         # positional incorrectness but includes letter in letter_bank
         # does not share any letters with bad_letters
@@ -62,8 +67,8 @@ class Solver(Wordle):
         """
         Updates possibe_answers to only contain words that safisty the given criteria
         """
+        result = result.upper()
         if result == "GGGGG":
-            print("The word was " + guess + "!")
             return [guess]
 
         # generating word constraints
@@ -98,28 +103,30 @@ class Solver(Wordle):
         word = ""
         entropy = 0
 
-        for possible_answer in self.possible_answers:
+        if len(self.possible_answers) == 1:
+            return self.possible_answers[0]
+
+        for possible_answer in self.validGuesses:
             d = self.generate_permuataions()
             for index, row in self.result_table[
                 ["possible_answers", possible_answer]
             ].iterrows():
                 d[row[possible_answer]] += 1
 
+            guess_word_condition = True
+            for perm in d:
+                if d[perm] >= 2:
+                    guess_word_condition = False
+            if guess_word_condition:
+                word = possible_answer
+                break
+
             curr_entropy = self.calculate_entropy(d)
-            if curr_entropy > entropy:
+            if curr_entropy >= entropy:
                 word = possible_answer
                 entropy = curr_entropy
-            print(
-                "Testing "
-                + possible_answer
-                + ", which has a score of: "
-                + str(curr_entropy)
-                + ". Current winner: "
-                + word
-                + " with score "
-                + str(entropy)
-            )
-
+            print(possible_answer + ". The best answer is: " + word)
+        self.validGuesses.remove(word)
         return word
 
     def calculate_entropy(self, pmf: dict):
@@ -133,3 +140,24 @@ class Solver(Wordle):
                     * math.log((possible_answer_count / pmf[key]), 2)
                 )
         return result
+
+    def main(self):
+        self.generateWordList()
+        count = 0
+        while self.gameState == "PLAYING":
+            count += 1
+            if count == 1:
+                best_word = "tarse"
+            else:
+                best_word = self.calculate_best_word()
+            print(len(self.possible_answers))
+            evaluation = input(
+                "The best guess is "
+                + best_word
+                + ". Using G, Y, and B for corresponding letters, input colors: "
+            ).upper()
+            if evaluation.upper() == "GGGGG":
+                print("Word guessed in " + str(count) + " tries!")
+                self.gameState == "WON"
+                break
+            self.update_possible_answers(best_word, evaluation)

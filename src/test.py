@@ -2,12 +2,13 @@ from Bot import Solver
 import pandas as pd
 
 result_table = pd.read_csv("./wordlists/results.csv")
-starter = "raise"
+starter_and_guessable = "raise"
+starter = "tarse"
 
 
 def test_guess_bank_modification():
     for i in range(1000):
-        solver = Solver(result_table)
+        solver = Solver(result_table, starter)
 
         word = solver.answer
         guess = "crane"
@@ -24,13 +25,18 @@ def test_guess_bank_modification():
 
 
 def what_is_best_word():
-    solver = Solver(result_table)
+    """
+    Calculating the best starter
+    """
+    solver = Solver(result_table, starter)
     print(solver.calculate_best_word())
 
 
 def main():
     # test_guess_bank_modification()
-    what_is_best_word()
+    # what_is_best_word()
+    solver = Solver(result_table, starter)
+    solver.main()
 
 
 main()

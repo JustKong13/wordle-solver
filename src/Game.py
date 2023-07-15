@@ -9,6 +9,7 @@ class Wordle:
         self.answer: str = ""
         self.validGuesses: list[str] = []
         self.gameState = "PLAYING"
+        self.generateWordList()
 
     def generateWordList(self) -> list[str]:
         """
