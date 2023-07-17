@@ -125,7 +125,7 @@ class Solver(Wordle):
             if curr_entropy >= entropy:
                 word = possible_answer
                 entropy = curr_entropy
-            print(possible_answer + ". The best answer is: " + word)
+            # print(possible_answer + ". The best answer is: " + word)
         self.validGuesses.remove(word)
         return word
 
@@ -142,7 +142,6 @@ class Solver(Wordle):
         return result
 
     def main(self):
-        self.generateWordList()
         count = 0
         while self.gameState == "PLAYING":
             count += 1
