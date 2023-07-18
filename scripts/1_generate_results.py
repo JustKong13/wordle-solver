@@ -67,5 +67,5 @@ for guess in guessable_words:
             d[guess[0]][guess].append(evaluateGuess(resulting_word, guess))
 
 
-with open("./wordlists/a.json", "w") as outfile:
+with open("./wordlists/results.json", "w") as outfile:
     json.dump(d, outfile)

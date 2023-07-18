@@ -159,4 +159,4 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 wordlists/results.csv
-wordlists/results_indexed.csv
+wordlists/result_table.txt

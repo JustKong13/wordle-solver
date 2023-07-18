@@ -2,6 +2,7 @@ from Game import Wordle
 from itertools import product
 import pandas as pd
 import math
+import json
 
 
 class Solver(Wordle):
@@ -100,6 +101,7 @@ class Solver(Wordle):
         """
         Return dictionary with possible row results and frequency
         """
+
         word = ""
         entropy = 0
 
@@ -107,6 +109,7 @@ class Solver(Wordle):
             return self.possible_answers[0]
 
         for possible_answer in self.validGuesses:
+            print("Checking word " + possible_answer + ". Current best word is " + word)
             d = self.generate_permuataions()
             for index, row in self.result_table[
                 ["possible_answers", possible_answer]
@@ -118,6 +121,8 @@ class Solver(Wordle):
                 if d[perm] >= 2:
                     guess_word_condition = False
             if guess_word_condition:
+                ### TODO: if multiple words with flat distributions choose one in guess bank
+
                 word = possible_answer
                 break
 
@@ -149,7 +154,11 @@ class Solver(Wordle):
                 best_word = "tarse"
             else:
                 best_word = self.calculate_best_word()
-            print(len(self.possible_answers))
+            print(
+                "There are "
+                + str(len(self.possible_answers))
+                + " possible answers remaining"
+            )
             evaluation = input(
                 "The best guess is "
                 + best_word
