@@ -29,3 +29,6 @@ def second_best_word(first_word):
         d[key] = solver.calculate_best_word()
         print(key + ": " + d[key])
     json.dump(d, "./wordlists/snd_guesses.json")
+
+
+second_best_word("tarse")

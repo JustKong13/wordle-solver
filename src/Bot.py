@@ -103,13 +103,13 @@ class Solver(Wordle):
         """
 
         word = ""
+        flat_dist_word = ""
         entropy = 0
 
         if len(self.possible_answers) == 1:
             return self.possible_answers[0]
 
         for possible_answer in self.validGuesses:
-            print("Checking word " + possible_answer + ". Current best word is " + word)
             d = self.generate_permuataions()
             for index, row in self.result_table[
                 ["possible_answers", possible_answer]
@@ -120,19 +120,22 @@ class Solver(Wordle):
             for perm in d:
                 if d[perm] >= 2:
                     guess_word_condition = False
-            if guess_word_condition:
-                ### TODO: if multiple words with flat distributions choose one in guess bank
-
-                word = possible_answer
+            if guess_word_condition and possible_answer in self.possible_answers:
+                word = perm
                 break
+            elif guess_word_condition:
+                flat_dist_word = possible_answer
 
             curr_entropy = self.calculate_entropy(d)
             if curr_entropy >= entropy:
                 word = possible_answer
                 entropy = curr_entropy
-            # print(possible_answer + ". The best answer is: " + word)
-        self.validGuesses.remove(word)
-        return word
+        if flat_dist_word == "":
+            self.validGuesses.remove(word)
+            return word
+        else:
+            self.validGuesses.remove(flat_dist_word)
+            return flat_dist_word
 
     def calculate_entropy(self, pmf: dict):
         possible_answer_count = len(self.possible_answers)
