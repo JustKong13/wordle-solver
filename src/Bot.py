@@ -121,7 +121,7 @@ class Solver(Wordle):
                 if d[perm] >= 2:
                     guess_word_condition = False
             if guess_word_condition and possible_answer in self.possible_answers:
-                word = perm
+                flat_dist_word = possible_answer
                 break
             elif guess_word_condition:
                 flat_dist_word = possible_answer
@@ -151,10 +151,16 @@ class Solver(Wordle):
 
     def main(self):
         count = 0
+        with open("./wordlists/snd_guesses.json") as f:
+            d = json.load(f)
+        f.close()
+        first_eval = ""
         while self.gameState == "PLAYING":
             count += 1
             if count == 1:
                 best_word = "tarse"
+            elif count == 2:
+                best_word = d[first_eval]
             else:
                 best_word = self.calculate_best_word()
             print(
@@ -171,4 +177,6 @@ class Solver(Wordle):
                 print("Word guessed in " + str(count) + " tries!")
                 self.gameState == "WON"
                 break
+            if count == 1:
+                first_eval = evaluation
             self.update_possible_answers(best_word, evaluation)
