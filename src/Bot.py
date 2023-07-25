@@ -50,7 +50,7 @@ class Solver(Wordle):
         # does not share any letters with bad_letters
         # check black letters
         for letter in black_letters:
-            if letter in possible_word:
+            if letter in possible_word and letter not in yellow_letters:
                 return False
         for i in range(5):
             # Chcek green letters
