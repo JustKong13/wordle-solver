@@ -73,10 +73,11 @@ class Wordle:
         d = {"B": "⬛️", "Y": "🟨", "G": "'🟩"}
 
         result = ""
-        for letter in row:
+        for letter in row.upper():
             result += d[letter]
-        result += " " + guess
         self.board.append(result)
+        for row in self.board:
+            print(row)
 
     def printBoard(self):
         """

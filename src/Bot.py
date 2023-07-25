@@ -180,3 +180,4 @@ class Solver(Wordle):
             if count == 1:
                 first_eval = evaluation
             self.update_possible_answers(best_word, evaluation)
+            self.convertRowToVisual(evaluation, best_word)

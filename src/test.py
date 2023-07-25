@@ -37,13 +37,33 @@ def what_is_best_word():
 
 
 def calc_avg_guesses():
+    """Return the expected number of guesses for any words"""
     with open("./wordlists/WordleWords.txt") as f:
-        lines = f.readlines()
+        lines = f.readlines()[:-1]
+    words = [word[:-1] for word in lines]
+    with open("./wordlists/snd_guesses.json") as f:
+        snd_guess = json.load(f)
+    f.close()
+
+    avg_guesses = 0
+
+    for word in words:  # looping through all the possible answers
+        solver = Solver(result_table=result_table, start_word="tarse")
+        solver.answer = word
+        playing = True
+        count = 0
+        first_eval = ""
+        while playing:
+            count += 1
+            if count == 1:
+                best_word = "tarse"
+            elif count == 2:
+                best_word = snd_guess[first_eval]
+            else:
+                best_word = solver.calculate_best_word()
+
+            evaluation = solver.evaluateGuess(solver.answer, best_word)
 
 
-def main():
-    solver = Solver(result_table, starter)
-    solver.main()
-
-
-main()
+solver = Solver(result_table=result_table, start_word="tarse")
+solver.main()
