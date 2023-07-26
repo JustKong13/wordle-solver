@@ -67,7 +67,7 @@ class Wordle:
         self.convertRowToVisual(row, guess)
         return row
 
-    def convertRowToVisual(self, row, guess):
+    def convertRowToVisual(self, row):
         if row == "INVALID":
             print("This word is invalid. Try again")
         d = {"B": "⬛️", "Y": "🟨", "G": "'🟩"}

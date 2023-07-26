@@ -173,6 +173,7 @@ class Solver(Wordle):
                 + best_word
                 + ". Using G, Y, and B for corresponding letters, input colors: "
             ).upper()
+            self.convertRowToVisual(evaluation)
             if evaluation.upper() == "GGGGG":
                 print("Word guessed in " + str(count) + " tries!")
                 self.gameState == "WON"
@@ -180,4 +181,3 @@ class Solver(Wordle):
             if count == 1:
                 first_eval = evaluation
             self.update_possible_answers(best_word, evaluation)
-            self.convertRowToVisual(evaluation, best_word)

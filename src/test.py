@@ -45,7 +45,7 @@ def calc_avg_guesses():
         snd_guess = json.load(f)
     f.close()
 
-    avg_guesses = 0
+    d = {}
 
     for word in words:  # looping through all the possible answers
         solver = Solver(result_table=result_table, start_word="tarse")
@@ -63,7 +63,19 @@ def calc_avg_guesses():
                 best_word = solver.calculate_best_word()
 
             evaluation = solver.evaluateGuess(solver.answer, best_word)
+            if count == 1:
+                first_eval = evaluation
+            if evaluation == "GGGGG":
+                playing = False
+                d[word] = count
+                print("Solved " + word)
+                break
+            solver.update_possible_answers(best_word, evaluation)
+
+    json.dump(d, "./wordlists/number_of_guesses.json")
 
 
 solver = Solver(result_table=result_table, start_word="tarse")
 solver.main()
+
+# calc_avg_guesses()
